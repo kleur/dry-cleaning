@@ -51,34 +51,7 @@ public class BusinessDayService {
 
     public Interval getTimeSlotForDate(DateTime start) {
 
-        Day day = getDay(start);
-
-        if (day.getTimeSlot(start) == null) {
-            return closedDay.getTimeSlot(start);
-        }
-
-        // Skip if already past end of the day
-        if (start.getMillisOfDay() >= day.getTimeSlot(start).getEndMillis()) {
-            System.out.println("Open today: " + start.getMillisOfDay()/1000/60);
-            System.out.println("Closed today: " + day.getTimeSlot(start).getEndMillis()/1000/60);
-            return closedDay.getTimeSlot(start);
-        }
-
-        // Set start of timeslot
-        DateTime fromTime = start;
-
-        // If start time is too early, set start of timeslot to opening time
-        if (fromTime.getMillisOfDay() < day.getTimeSlot(start).getStartMillis()) {
-            fromTime = timeService.getDateWithoutTime(fromTime)
-                    .withMillisOfDay((int) day.getTimeSlot(start).getStartMillis());
-        }
-
-        DateTime toTime = timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis());
-
-        System.out.println("still open from: " + fromTime.getHourOfDay() + ":" + fromTime.getMinuteOfHour() + " to: " +
-                toTime.getHourOfDay() + ":" + toTime.getMinuteOfHour());
-
-        return new Interval(fromTime, timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis()));
+        return getDay(start).getTimeSlot(start);
     }
 
     public void setTimeService(TimeService timeService) {

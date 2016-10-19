@@ -21,7 +21,6 @@ public class TimeService {
     }
 
     public DateTime getDateWithoutTime(DateTime d) {
-
         return d.withTimeAtStartOfDay();
     }
 

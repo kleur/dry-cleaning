@@ -13,7 +13,7 @@ public class Main {
 //        businessHourCalculator.setOpeningHours("2010-12-24", "8:00", "13:00");
 //        businessHourCalculator.setClosed(DayOfWeek.SUNDAY, DayOfWeek.WEDNESDAY);
 //        businessHourCalculator.setClosed("2010-12-25");
-
+//
 //        // example #1
 //        System.out.println(businessHourCalculator.calculateDeadline(2 * 60 * 60, "2010-06-07 09:10"));
 //        // => Mon Jun 07 11:10:00 2010

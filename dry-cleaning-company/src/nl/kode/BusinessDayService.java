@@ -127,13 +127,22 @@ public class BusinessDayService {
             String msg = weekDays.get(wkday).getTimeSlot(DateTime.now()) != null ? (weekDays.get(wkday).getTimeSlot(DateTime.now()).getStartMillis()/1000/60/60 + " till "
                     + weekDays.get(wkday).getTimeSlot(DateTime.now()).getEndMillis()/1000/60/60 + " o'clock") : "closed";
 
-            System.out.println("Special day: " + msg);
+            System.out.println("Special day: " + msg + " on " + wkday.toString());
         }
         System.out.println("");
 
         System.out.println("PRINT SPECIAL DATES");
+        for (DateTime dateTime : dates.keySet()) {
+            String msg = dates.get(dateTime).getTimeSlot(DateTime.now()) != null ? (dates.get(dateTime).getTimeSlot(DateTime.now()).getStartMillis()/1000/60/60 + " till "
+                    + dates.get(dateTime).getTimeSlot(DateTime.now()).getEndMillis()/1000/60/60 + " o'clock" + dateTime.getDayOfMonth() + "/" + dateTime.getMonthOfYear()) : "closed";
+
+            System.out.println("Special day: " + msg + " on " + dateTime);
+        }
+
+        System.out.println("\nold list:");
         for (DateTime dateTime : closedDates) {
             System.out.println(dateTime);
         }
+
     }
 }

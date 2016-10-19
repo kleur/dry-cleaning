@@ -30,6 +30,12 @@ public class BusinessDayService {
 
         System.out.println("start: " + start);
 
+        // Skip if closed on this day
+        if (closedDays.contains(DayOfWeek.values()[timeService.getDayIndex(start)])) {
+            System.out.println("CLOSED ON " + DayOfWeek.values()[timeService.getDayIndex(start)]);
+            return null;
+        }
+
         // Skip if already past end of the day
         if (start.getMillisOfDay() >= defaultClose) {
             System.out.println("start time: " + start.getMillisOfDay()/1000/60);

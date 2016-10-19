@@ -49,4 +49,8 @@ public class TimeService {
 
         return knownPatterns;
     }
+
+    public int getDayIndex(DateTime date) {
+        return date.getDayOfWeek()==7? 0 : date.getDayOfWeek();
+    }
 }

@@ -12,13 +12,11 @@ public class BusinessDay implements Day {
 
     long openingTime;
     long closingTime;
-    TimeService timeService;
 
     public BusinessDay(long openingTime, long closingTime) {
         super();
         this.openingTime = openingTime;
         this.closingTime = closingTime;
-        this.timeService = new TimeService();
     }
 
     @Override
@@ -31,10 +29,10 @@ public class BusinessDay implements Day {
 
         // If start time is too early, set start of timeslot to opening time
         if (fromTime.getMillisOfDay() < openingTime) {
-            fromTime = timeService.getDateWithoutTime(fromTime).withMillisOfDay((int) openingTime);
+            fromTime = fromTime.withTimeAtStartOfDay().withMillisOfDay((int) openingTime);
         }
 
-        DateTime toTime = timeService.getDateWithoutTime(fromTime).withMillisOfDay((int) closingTime);
+        DateTime toTime = fromTime.withTimeAtStartOfDay().withMillisOfDay((int) closingTime);
 
         return new Interval(fromTime, toTime);
     }

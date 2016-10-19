@@ -22,7 +22,6 @@ public class BusinessHourCalculator {
         super();
         this.timeService = new TimeService();
         this.businessDayService = new BusinessDayService(timeService);
-        this.businessDayService.setTimeService(timeService);
         this.businessDayService.setRegularDay(
                 timeService.timeStringToMillis(defaultOpeningTime),
                 timeService.timeStringToMillis(defaultClosingTime));
@@ -62,7 +61,6 @@ public class BusinessHourCalculator {
         DateTime pointer = new DateTime(startDate);
 
         System.out.println("DROP OFF DATE/TIME: " + startDate);
-        System.out.println(pointer);
 
         Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
         Duration businessTimeLeft = new Duration(0);
@@ -74,7 +72,6 @@ public class BusinessHourCalculator {
             if (timeSlot != null) {
                 businessTimeLeft = businessTimeLeft.plus(timeSlot.toDuration());
                 intervals.add(timeSlot);
-                System.out.println(businessTimeLeft.getStandardHours() + " uur over");
             }
 
             // to the next day

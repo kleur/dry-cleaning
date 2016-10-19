@@ -20,10 +20,10 @@ public class BusinessDayService {
     private Map<DayOfWeek, Day> weekDays;
     private Map<DateTime, Day> dates;
 
-    private TimeService timeService;
+//    private TimeService timeService;
 
     public BusinessDayService(TimeService timeService) {
-        this.timeService = timeService;
+//        this.timeService = timeService;
         this.closedDay = new ClosedDay();
         this.weekDays = new LinkedHashMap<>();
         this.dates = new LinkedHashMap<>();
@@ -31,8 +31,7 @@ public class BusinessDayService {
 
     private Day getDay(DateTime dateTime) {
 
-        System.out.println("pointer: " + dateTime);
-        DayOfWeek weekDayName = DayOfWeek.values()[timeService.getDayIndex(dateTime)];
+        DayOfWeek weekDayName = DayOfWeek.values()[getDayIndex(dateTime)];
 
         Day day = regularDay;
 
@@ -42,11 +41,15 @@ public class BusinessDayService {
         }
 
         // Check for special date
-        if (dates.containsKey(timeService.getDateWithoutTime(dateTime))) {
-            day = dates.get(timeService.getDateWithoutTime(dateTime));
+        if (dates.containsKey(dateTime.withTimeAtStartOfDay())) {
+            day = dates.get(dateTime.withTimeAtStartOfDay());
         }
 
         return day;
+    }
+
+    private int getDayIndex(DateTime date) {
+        return date.getDayOfWeek()==7? 0 : date.getDayOfWeek();
     }
 
     public Interval getTimeSlotForDate(DateTime start) {
@@ -54,16 +57,12 @@ public class BusinessDayService {
         return getDay(start).getTimeSlot(start);
     }
 
-    public void setTimeService(TimeService timeService) {
-        this.timeService = timeService;
-    }
-
     public void addClosedDay(DayOfWeek dayOfWeek) {
         weekDays.put(dayOfWeek, new ClosedDay());
     }
 
     public void addClosedDate(Date date) {
-        dates.put(timeService.getDateWithoutTime(new DateTime(date)), new ClosedDay());
+        dates.put((new DateTime(date).withTimeAtStartOfDay()), new ClosedDay());
     }
 
     public void setRegularDay(long openingTime, long closingTime) {

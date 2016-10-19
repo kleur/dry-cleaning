@@ -1,6 +1,7 @@
 package nl.kode;
 
 import com.google.common.collect.Iterables;
+import nl.kode.days.Day;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -21,7 +22,7 @@ public class BusinessHourCalculator {
     public BusinessHourCalculator(String defaultOpeningTime, String defaultClosingTime) {
         super();
         this.timeService = new TimeService();
-        this.businessDayService = new BusinessDayService(timeService);
+        this.businessDayService = new BusinessDayService();
         this.businessDayService.setRegularDay(
                 timeService.timeStringToMillis(defaultOpeningTime),
                 timeService.timeStringToMillis(defaultClosingTime));
@@ -68,14 +69,14 @@ public class BusinessHourCalculator {
         List<Interval> intervals = new ArrayList<>();
         while(waitTime.isLongerThan(businessTimeLeft)) {
 
-            Interval timeSlot = businessDayService.getTimeSlotForDate(pointer);
+            Interval timeSlot = businessDayService.getDay(pointer).getTimeSlot(pointer);
             if (timeSlot != null) {
                 businessTimeLeft = businessTimeLeft.plus(timeSlot.toDuration());
                 intervals.add(timeSlot);
             }
 
             // to the next day
-            pointer = timeService.getDateWithoutTime(pointer).plusDays(1);
+            pointer = pointer.withTimeAtStartOfDay().plusDays(1);
         }
 
         Interval lastInterval = Iterables.getLast(intervals);

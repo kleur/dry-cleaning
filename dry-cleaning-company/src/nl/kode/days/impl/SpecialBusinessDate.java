@@ -1,6 +1,5 @@
 package nl.kode.days.impl;
 
-import nl.kode.DayOfWeek;
 import org.joda.time.DateTime;
 
 /**

@@ -6,7 +6,6 @@ import nl.kode.days.impl.ClosedDay;
 import nl.kode.days.impl.SpecialBusinessDate;
 import nl.kode.days.impl.SpecialBusinessDay;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import java.util.*;
 
@@ -20,16 +19,13 @@ public class BusinessDayService {
     private Map<DayOfWeek, Day> weekDays;
     private Map<DateTime, Day> dates;
 
-//    private TimeService timeService;
-
-    public BusinessDayService(TimeService timeService) {
-//        this.timeService = timeService;
+    public BusinessDayService() {
         this.closedDay = new ClosedDay();
         this.weekDays = new LinkedHashMap<>();
         this.dates = new LinkedHashMap<>();
     }
 
-    private Day getDay(DateTime dateTime) {
+    public Day getDay(DateTime dateTime) {
 
         DayOfWeek weekDayName = DayOfWeek.values()[getDayIndex(dateTime)];
 
@@ -50,11 +46,6 @@ public class BusinessDayService {
 
     private int getDayIndex(DateTime date) {
         return date.getDayOfWeek()==7? 0 : date.getDayOfWeek();
-    }
-
-    public Interval getTimeSlotForDate(DateTime start) {
-
-        return getDay(start).getTimeSlot(start);
     }
 
     public void addClosedDay(DayOfWeek dayOfWeek) {

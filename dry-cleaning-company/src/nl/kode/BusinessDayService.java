@@ -105,6 +105,7 @@ public class BusinessDayService {
     }
 
     public void addClosedDate(Date date) {
+        dates.put(timeService.getDateWithoutTime(new DateTime(date)), new ClosedDay());
         this.closedDates.add(timeService.getDateWithoutTime(new DateTime(date)));
     }
 

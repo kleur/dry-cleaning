@@ -20,8 +20,9 @@ public class BusinessHourCalculator {
         this.timeService = new TimeService();
         this.businessDayService = new BusinessDayService(timeService);
         this.businessDayService.setTimeService(timeService);
-        this.businessDayService.setDefaultOpen(timeService.timeStringToMillis(defaultOpeningTime));
-        this.businessDayService.setDefaultClose(timeService.timeStringToMillis(defaultClosingTime));
+        this.businessDayService.setRegularDay(
+                timeService.timeStringToMillis(defaultOpeningTime),
+                timeService.timeStringToMillis(defaultClosingTime));
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
@@ -62,7 +63,7 @@ public class BusinessHourCalculator {
         List<Interval> intervals = new ArrayList<>();
         while(waitTime.isLongerThan(businessTimeLeft)) {
 
-            Interval timeSlot = businessDayService.getTimeSlotForDay(pointer);
+            Interval timeSlot = businessDayService.getTimeSlotForDate(pointer);
             if (timeSlot != null) {
                 businessTimeLeft = businessTimeLeft.plus(timeSlot.toDuration());
                 intervals.add(timeSlot);

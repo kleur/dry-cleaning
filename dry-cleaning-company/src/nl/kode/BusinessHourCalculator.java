@@ -26,7 +26,9 @@ public class BusinessHourCalculator {
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
-        //
+        businessDayService.addSpecialWeekDay(dayOfWeek,
+                timeService.timeStringToMillis(openingTime),
+                timeService.timeStringToMillis(closingTime));
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
@@ -77,9 +79,11 @@ public class BusinessHourCalculator {
         Interval lastInterval = Iterables.getLast(intervals);
         DateTime endTime = lastInterval.getEnd().minus(businessTimeLeft.minus(waitTime));
 
-        businessDayService.printClosedDates();
-
         return new Date(endTime.getMillis());
+    }
+
+    public void printSpecials() {
+        businessDayService.printClosedDates();
     }
     
 }

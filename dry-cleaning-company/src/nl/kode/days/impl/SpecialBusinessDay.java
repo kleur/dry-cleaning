@@ -13,4 +13,8 @@ public class SpecialBusinessDay extends BusinessDay {
         super(openingTime, closingTime);
         this.dayOfWeek = dayOfWeek;
     }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
 }

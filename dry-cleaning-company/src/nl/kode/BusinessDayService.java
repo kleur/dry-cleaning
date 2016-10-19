@@ -3,12 +3,11 @@ package nl.kode;
 import nl.kode.days.Day;
 import nl.kode.days.impl.BusinessDay;
 import nl.kode.days.impl.ClosedDay;
+import nl.kode.days.impl.SpecialBusinessDay;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by koenvandeleur on 19/10/2016.
@@ -20,7 +19,7 @@ public class BusinessDayService {
 
     private List<DayOfWeek> closedDays;
     private List<DateTime> closedDates;
-    private List<Day> specialDays;
+    private Map<DayOfWeek, Day> weekDays;
 
     private TimeService timeService;
 
@@ -29,28 +28,37 @@ public class BusinessDayService {
         this.closedDays = new LinkedList<>();
         this.closedDates = new LinkedList<>();
         this.closedDay = new ClosedDay();
+        this.weekDays = new LinkedHashMap<>();
     }
 
     public Interval getTimeSlotForDate(DateTime start) {
 
+        System.out.println("pointer: " + start);
+
+        DayOfWeek startDayOfWeek = DayOfWeek.values()[timeService.getDayIndex(start)];
         Day day = regularDay;
+
+        // Skip if closed on this day
+        if (closedDays.contains(startDayOfWeek)) {
+            System.out.println("CLOSED ON DAY: " + startDayOfWeek);
+            return closedDay.getTimeSlot(start);
+        }
+
+        // Skip if closed on this date
+        if (closedDates.contains(timeService.getDateWithoutTime(start))) {
+            System.out.println("CLOSED ON DATE: " + timeService.getDateWithoutTime(start));
+            return closedDay.getTimeSlot(start);
+        }
+
+        if (weekDays.containsKey(startDayOfWeek)) {
+            day = weekDays.get(startDayOfWeek);
+        }
 
         System.out.println("----------------------");
         System.out.println("day open at: " + day.getTimeSlot(start).getStartMillis()/1000/60/60);
         System.out.println("day close at: " + day.getTimeSlot(start).getEndMillis()/1000/60/60);
         System.out.println("----------------------");
-        System.out.println("start: " + start);
 
-        // Skip if closed on this day
-        if (closedDays.contains(DayOfWeek.values()[timeService.getDayIndex(start)])) {
-            System.out.println("CLOSED ON DAY: " + DayOfWeek.values()[timeService.getDayIndex(start)]);
-            return closedDay.getTimeSlot(start);
-        }
-
-        if(closedDates.contains(timeService.getDateWithoutTime(start))) {
-            System.out.println("CLOSED ON DATE: " + timeService.getDateWithoutTime(start));
-            return closedDay.getTimeSlot(start);
-        }
 
         // Skip if already past end of the day
         if (start.getMillisOfDay() >= day.getTimeSlot(start).getEndMillis()) {
@@ -78,8 +86,9 @@ public class BusinessDayService {
         this.timeService = timeService;
     }
 
-    public void addClosedDay(DayOfWeek closedDay) {
-        this.closedDays.add(closedDay);
+    public void addClosedDay(DayOfWeek dayOfWeek) {
+        weekDays.put(dayOfWeek, new ClosedDay());
+        this.closedDays.add(dayOfWeek);
     }
 
     public void addClosedDate(Date date) {
@@ -91,9 +100,23 @@ public class BusinessDayService {
     }
 
     public void printClosedDates() {
-        System.out.println("PRINT CLOSED DATES");
+        System.out.println("PRINT SPECIAL DATES");
         for (DateTime dateTime : closedDates) {
             System.out.println(dateTime);
         }
+
+        System.out.println("set special weekdays:");
+        for (DayOfWeek wkday : weekDays.keySet()) {
+            String msg = weekDays.get(wkday).getTimeSlot(DateTime.now()) != null ? (weekDays.get(wkday).getTimeSlot(DateTime.now()).getStartMillis()/1000/60/60 + " till "
+                    + weekDays.get(wkday).getTimeSlot(DateTime.now()).getEndMillis()/1000/60/60 + " o'clock") : "closed";
+
+            System.out.println("Special day: " + msg);
+        }
+        System.out.println("");
+    }
+
+    public void addSpecialWeekDay(DayOfWeek dayOfWeek, long openingTime, long closingTime) {
+        weekDays.put(dayOfWeek, (new SpecialBusinessDay(openingTime, closingTime, dayOfWeek)));
+
     }
 }

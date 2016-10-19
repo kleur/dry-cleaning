@@ -27,13 +27,16 @@ public class Main {
 //        // => Mon Dec 27 11:00:00 2010
 
 
-        BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "17:00");
-//        businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
+        BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "18:00");
+        businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
 //        businessHourCalculator.setOpeningHours("2010-12-24", "8:00", "13:00");
         businessHourCalculator.setClosed(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
         businessHourCalculator.setClosed("2010-12-25");
 
         Date dateTime = businessHourCalculator.calculateDeadline(2 * 60 * 60, "2016-10-21 16:30");
-        System.out.println(dateTime.toString());
+        System.out.println("PICKUP TIME: " + dateTime.toString());
+
+        System.out.println("---");
+        businessHourCalculator.printSpecials();
     }
 }

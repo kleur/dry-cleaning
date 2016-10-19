@@ -16,7 +16,7 @@ public class BusinessDayService {
     private long defaultClose;
 
     private final List<DayOfWeek> closedDays;
-    private final List<Date> closedDates;
+    private final List<DateTime> closedDates;
 
     private TimeService timeService;
 
@@ -32,7 +32,12 @@ public class BusinessDayService {
 
         // Skip if closed on this day
         if (closedDays.contains(DayOfWeek.values()[timeService.getDayIndex(start)])) {
-            System.out.println("CLOSED ON " + DayOfWeek.values()[timeService.getDayIndex(start)]);
+            System.out.println("CLOSED ON DAY: " + DayOfWeek.values()[timeService.getDayIndex(start)]);
+            return null;
+        }
+
+        if(closedDates.contains(timeService.getDateWithoutTime(start))) {
+            System.out.println("CLOSED ON DATE: " + timeService.getDateWithoutTime(start));
             return null;
         }
 
@@ -87,6 +92,13 @@ public class BusinessDayService {
     }
 
     public void addClosedDate(Date date) {
-        this.closedDates.add(date);
+        this.closedDates.add(timeService.getDateWithoutTime(new DateTime(date)));
+    }
+
+    public void printClosedDates() {
+        System.out.println("PRINT CLOSED DATES");
+        for (DateTime dateTime : closedDates) {
+            System.out.println(dateTime);
+        }
     }
 }

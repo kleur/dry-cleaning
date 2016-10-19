@@ -53,7 +53,7 @@ public class BusinessHourCalculator {
         Date startDate = timeService.parseDate(dateString);
         DateTime pointer = new DateTime(startDate);
 
-        System.out.println(startDate);
+        System.out.println("DROP OFF DATE/TIME: " + startDate);
         System.out.println(pointer);
 
         Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
@@ -76,9 +76,9 @@ public class BusinessHourCalculator {
         Interval lastInterval = Iterables.getLast(intervals);
         DateTime endTime = lastInterval.getEnd().minus(businessTimeLeft.minus(waitTime));
 
+        businessDayService.printClosedDates();
+
         return new Date(endTime.getMillis());
     }
-
-
-
+    
 }

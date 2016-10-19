@@ -57,16 +57,10 @@ public class BusinessDayService {
             return closedDay.getTimeSlot(start);
         }
 
-        System.out.println("----------------------");
-        System.out.println("day open at: " + day.getTimeSlot(start).getStartMillis()/1000/60/60);
-        System.out.println("day close at: " + day.getTimeSlot(start).getEndMillis()/1000/60/60);
-        System.out.println("----------------------");
-
-
         // Skip if already past end of the day
         if (start.getMillisOfDay() >= day.getTimeSlot(start).getEndMillis()) {
-            System.out.println("start time: " + start.getMillisOfDay()/1000/60);
-            System.out.println("default close: " + day.getTimeSlot(start).getEndMillis()/1000/60);
+            System.out.println("Open today: " + start.getMillisOfDay()/1000/60);
+            System.out.println("Closed today: " + day.getTimeSlot(start).getEndMillis()/1000/60);
             return closedDay.getTimeSlot(start);
         }
 
@@ -75,8 +69,8 @@ public class BusinessDayService {
 
         // If start time is too early, set start of timeslot to opening time
         if (fromTime.getMillisOfDay() < day.getTimeSlot(start).getStartMillis()) {
-            System.out.println("start time too early");
-            fromTime = timeService.getDateWithoutTime(fromTime).withMillisOfDay((int) day.getTimeSlot(start).getStartMillis());
+            fromTime = timeService.getDateWithoutTime(fromTime)
+                    .withMillisOfDay((int) day.getTimeSlot(start).getStartMillis());
         }
 
         DateTime toTime = timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis());

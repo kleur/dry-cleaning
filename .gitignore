@@ -6,4 +6,5 @@
 .idea/copyright
 .idea/workspace.xml
 /out
+*.iml
 \.DS_Store

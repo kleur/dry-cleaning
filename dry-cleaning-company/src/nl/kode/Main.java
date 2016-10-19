@@ -29,7 +29,7 @@ public class Main {
 
         BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "18:00");
         businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
-//        businessHourCalculator.setOpeningHours("2010-12-24", "8:00", "13:00");
+        businessHourCalculator.setOpeningHours("2016-10-24", "12:00", "18:00");
         businessHourCalculator.setClosed(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
         businessHourCalculator.setClosed("2010-12-25");
 

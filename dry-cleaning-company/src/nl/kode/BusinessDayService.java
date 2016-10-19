@@ -3,6 +3,7 @@ package nl.kode;
 import nl.kode.days.Day;
 import nl.kode.days.impl.BusinessDay;
 import nl.kode.days.impl.ClosedDay;
+import nl.kode.days.impl.SpecialBusinessDate;
 import nl.kode.days.impl.SpecialBusinessDay;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -20,6 +21,7 @@ public class BusinessDayService {
     private List<DayOfWeek> closedDays;
     private List<DateTime> closedDates;
     private Map<DayOfWeek, Day> weekDays;
+    private Map<DateTime, Day> dates;
 
     private TimeService timeService;
 
@@ -29,14 +31,25 @@ public class BusinessDayService {
         this.closedDates = new LinkedList<>();
         this.closedDay = new ClosedDay();
         this.weekDays = new LinkedHashMap<>();
+        this.dates = new LinkedHashMap<>();
     }
 
     public Interval getTimeSlotForDate(DateTime start) {
 
         System.out.println("pointer: " + start);
-
         DayOfWeek startDayOfWeek = DayOfWeek.values()[timeService.getDayIndex(start)];
+
         Day day = regularDay;
+
+        // Check for special day
+        if (weekDays.containsKey(startDayOfWeek)) {
+            day = weekDays.get(startDayOfWeek);
+        }
+
+        // Check for special date
+        if (dates.containsKey(timeService.getDateWithoutTime(start))) {
+            day = dates.get(timeService.getDateWithoutTime(start));
+        }
 
         // Skip if closed on this day
         if (closedDays.contains(startDayOfWeek)) {
@@ -50,9 +63,7 @@ public class BusinessDayService {
             return closedDay.getTimeSlot(start);
         }
 
-        if (weekDays.containsKey(startDayOfWeek)) {
-            day = weekDays.get(startDayOfWeek);
-        }
+
 
         System.out.println("----------------------");
         System.out.println("day open at: " + day.getTimeSlot(start).getStartMillis()/1000/60/60);
@@ -76,8 +87,10 @@ public class BusinessDayService {
             fromTime = timeService.getDateWithoutTime(fromTime).withMillisOfDay((int) day.getTimeSlot(start).getStartMillis());
         }
 
-//        System.out.println("from: " + fromTime.getHourOfDay()+ " o'clock");
-//        System.out.println("to: " + timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis()).getHourOfDay() + " o'clock");
+        DateTime toTime = timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis());
+
+        System.out.println("still open from: " + fromTime.getHourOfDay() + ":" + fromTime.getMinuteOfHour() + " to: " +
+                toTime.getHourOfDay() + ":" + toTime.getMinuteOfHour());
 
         return new Interval(fromTime, timeService.getDateWithoutTime(start).withMillisOfDay((int) day.getTimeSlot(start).getEndMillis()));
     }
@@ -99,13 +112,17 @@ public class BusinessDayService {
         regularDay = new BusinessDay(openingTime, closingTime);
     }
 
-    public void printClosedDates() {
-        System.out.println("PRINT SPECIAL DATES");
-        for (DateTime dateTime : closedDates) {
-            System.out.println(dateTime);
-        }
+    public void addSpecialWeekDay(DayOfWeek dayOfWeek, long openingTime, long closingTime) {
+        weekDays.put(dayOfWeek, (new SpecialBusinessDay(openingTime, closingTime, dayOfWeek)));
+    }
 
-        System.out.println("set special weekdays:");
+    public void addSpecialDate(DateTime dateTime, long openingTime, long closingTime) {
+        dates.put(dateTime, (new SpecialBusinessDate(openingTime, closingTime, dateTime)));
+    }
+
+    public void printClosedDates() {
+
+        System.out.println("PRINT SPECIAL WEEKDAYS");
         for (DayOfWeek wkday : weekDays.keySet()) {
             String msg = weekDays.get(wkday).getTimeSlot(DateTime.now()) != null ? (weekDays.get(wkday).getTimeSlot(DateTime.now()).getStartMillis()/1000/60/60 + " till "
                     + weekDays.get(wkday).getTimeSlot(DateTime.now()).getEndMillis()/1000/60/60 + " o'clock") : "closed";
@@ -113,10 +130,10 @@ public class BusinessDayService {
             System.out.println("Special day: " + msg);
         }
         System.out.println("");
-    }
 
-    public void addSpecialWeekDay(DayOfWeek dayOfWeek, long openingTime, long closingTime) {
-        weekDays.put(dayOfWeek, (new SpecialBusinessDay(openingTime, closingTime, dayOfWeek)));
-
+        System.out.println("PRINT SPECIAL DATES");
+        for (DateTime dateTime : closedDates) {
+            System.out.println(dateTime);
+        }
     }
 }

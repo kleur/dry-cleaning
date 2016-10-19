@@ -32,7 +32,9 @@ public class BusinessHourCalculator {
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
-        //
+        businessDayService.addSpecialDate(new DateTime(timeService.parseDate(date)),
+                timeService.timeStringToMillis(openingTime),
+                timeService.timeStringToMillis(closingTime));
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks)

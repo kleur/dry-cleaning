@@ -27,7 +27,7 @@ public class Main {
 //        // => Mon Dec 27 11:00:00 2010
 
 
-        BusinessHourCalculator businessHourCalculator = new DryCleanBusinessHourCalculator("09:00", "18:00");
+        BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "18:00");
         businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
         businessHourCalculator.setOpeningHours("2016-10-24", "12:00", "18:00");
         businessHourCalculator.setClosed(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);

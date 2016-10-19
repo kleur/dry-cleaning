@@ -17,9 +17,6 @@ public class BusinessDayService {
 
     private Day closedDay;
     private Day regularDay;
-
-    private List<DayOfWeek> closedDays;
-    private List<DateTime> closedDates;
     private Map<DayOfWeek, Day> weekDays;
     private Map<DateTime, Day> dates;
 
@@ -27,43 +24,38 @@ public class BusinessDayService {
 
     public BusinessDayService(TimeService timeService) {
         this.timeService = timeService;
-        this.closedDays = new LinkedList<>();
-        this.closedDates = new LinkedList<>();
         this.closedDay = new ClosedDay();
         this.weekDays = new LinkedHashMap<>();
         this.dates = new LinkedHashMap<>();
     }
 
-    public Interval getTimeSlotForDate(DateTime start) {
+    private Day getDay(DateTime dateTime) {
 
-        System.out.println("pointer: " + start);
-        DayOfWeek startDayOfWeek = DayOfWeek.values()[timeService.getDayIndex(start)];
+        System.out.println("pointer: " + dateTime);
+        DayOfWeek weekDayName = DayOfWeek.values()[timeService.getDayIndex(dateTime)];
 
         Day day = regularDay;
 
         // Check for special day
-        if (weekDays.containsKey(startDayOfWeek)) {
-            day = weekDays.get(startDayOfWeek);
+        if (weekDays.containsKey(weekDayName)) {
+            day = weekDays.get(weekDayName);
         }
 
         // Check for special date
-        if (dates.containsKey(timeService.getDateWithoutTime(start))) {
-            day = dates.get(timeService.getDateWithoutTime(start));
+        if (dates.containsKey(timeService.getDateWithoutTime(dateTime))) {
+            day = dates.get(timeService.getDateWithoutTime(dateTime));
         }
 
-        // Skip if closed on this day
-        if (closedDays.contains(startDayOfWeek)) {
-            System.out.println("CLOSED ON DAY: " + startDayOfWeek);
+        return day;
+    }
+
+    public Interval getTimeSlotForDate(DateTime start) {
+
+        Day day = getDay(start);
+
+        if (day.getTimeSlot(start) == null) {
             return closedDay.getTimeSlot(start);
         }
-
-        // Skip if closed on this date
-        if (closedDates.contains(timeService.getDateWithoutTime(start))) {
-            System.out.println("CLOSED ON DATE: " + timeService.getDateWithoutTime(start));
-            return closedDay.getTimeSlot(start);
-        }
-
-
 
         System.out.println("----------------------");
         System.out.println("day open at: " + day.getTimeSlot(start).getStartMillis()/1000/60/60);
@@ -101,12 +93,10 @@ public class BusinessDayService {
 
     public void addClosedDay(DayOfWeek dayOfWeek) {
         weekDays.put(dayOfWeek, new ClosedDay());
-        this.closedDays.add(dayOfWeek);
     }
 
     public void addClosedDate(Date date) {
         dates.put(timeService.getDateWithoutTime(new DateTime(date)), new ClosedDay());
-        this.closedDates.add(timeService.getDateWithoutTime(new DateTime(date)));
     }
 
     public void setRegularDay(long openingTime, long closingTime) {
@@ -139,11 +129,5 @@ public class BusinessDayService {
 
             System.out.println("Special day: " + msg + " on " + dateTime);
         }
-
-        System.out.println("\nold list:");
-        for (DateTime dateTime : closedDates) {
-            System.out.println(dateTime);
-        }
-
     }
 }

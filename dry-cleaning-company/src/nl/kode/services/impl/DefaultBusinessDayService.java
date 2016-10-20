@@ -74,15 +74,15 @@ public class DefaultBusinessDayService implements BusinessDayService{
     @Override
     public void printClosedDates() {
         System.out.println("\nPRINT SPECIAL WEEKDAYS");
-        printDates(dates);
+        printDates(weekDays);
 
         System.out.println("\nPRINT SPECIAL DATES");
-        printDates(weekDays);
+        printDates(dates);
     }
 
     private void printDates(Map<?, Day> map) {
         for (Object o : map.keySet()) {
-            Interval timeSlot = map.get(o).getTimeSlot(DateTime.now());
+            Interval timeSlot = map.get(o).getTimeSlot(DateTime.now().withTimeAtStartOfDay());
             printOpeningTimes(timeSlot, o.toString());
         }
     }

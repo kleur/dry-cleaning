@@ -26,13 +26,14 @@ public class DryClean {
 
 
         BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "18:00");
+
         businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
         businessHourCalculator.setOpeningHours("2016-10-24", "12:00", "18:00");
         businessHourCalculator.setClosed(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-        businessHourCalculator.setClosed("2010-12-25");
+        businessHourCalculator.setClosed("2016-10-25");
 
-        Date dateTime = businessHourCalculator.calculateDeadline(2 * 60 * 60, "2016-10-21 16:30");
-        System.out.println("PICKUP TIME: " + dateTime.toString());
+        Date date = businessHourCalculator.calculateDeadline(12 * 60 * 60, "2016-10-21 16:30");
+        System.out.println("PICKUP TIME: " + date.toString());
 
         System.out.println("---");
         businessHourCalculator.printSpecials();

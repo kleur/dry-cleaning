@@ -1,6 +1,7 @@
 package nl.kode;
 
 import com.google.common.collect.Iterables;
+import nl.kode.days.DayOfWeek;
 import nl.kode.services.TimeService;
 import nl.kode.services.impl.DefaultBusinessDayService;
 import nl.kode.services.impl.DefaultTimeService;
@@ -60,8 +61,6 @@ public class BusinessHourCalculator {
     public Date calculateDeadline(long steamTimeSeconds, String dateString) {
 
         DateTime pointer = timeService.parseDate(dateString);
-
-        System.out.println("DROP OFF DATE/TIME: " + pointer);
 
         Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
         Duration businessTimeLeft = new Duration(0);

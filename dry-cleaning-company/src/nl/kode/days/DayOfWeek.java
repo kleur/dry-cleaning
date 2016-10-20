@@ -1,4 +1,4 @@
-package nl.kode;
+package nl.kode.days;
 
 /**
  * Created by koenvandeleur on 18/10/2016.

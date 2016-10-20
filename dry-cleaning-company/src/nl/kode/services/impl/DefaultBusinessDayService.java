@@ -1,6 +1,6 @@
 package nl.kode.services.impl;
 
-import nl.kode.DayOfWeek;
+import nl.kode.days.DayOfWeek;
 import nl.kode.days.Day;
 import nl.kode.days.impl.BusinessDay;
 import nl.kode.days.impl.ClosedDay;

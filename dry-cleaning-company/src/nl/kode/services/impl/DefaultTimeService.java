@@ -2,7 +2,9 @@ package nl.kode.services.impl;
 
 import nl.kode.services.TimeService;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,10 +18,7 @@ public class DefaultTimeService implements TimeService {
 
     @Override
     public long timeStringToMillis(String time) {
-        String[] units = time.split(":");
-        int hours = Integer.parseInt(units[0]);
-        int minutes = Integer.parseInt(units[1]);
-        return ((hours * 60) + minutes) * 60 * 1000;
+        return new DateTime(parseDate(time)).getMillisOfDay();
     }
 
     @Override
@@ -45,6 +44,7 @@ public class DefaultTimeService implements TimeService {
 //        knownPatterns.add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX"));
         knownPatterns.add(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"));
         knownPatterns.add(new SimpleDateFormat("yyyy-MM-dd"));
+        knownPatterns.add(new SimpleDateFormat("HH:mm"));
 
         return knownPatterns;
     }

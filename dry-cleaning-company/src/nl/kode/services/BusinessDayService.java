@@ -4,8 +4,6 @@ import nl.kode.DayOfWeek;
 import nl.kode.days.Day;
 import org.joda.time.DateTime;
 
-import java.util.Date;
-
 /**
  * Created by koenvandeleur on 20/10/2016.
  */
@@ -17,7 +15,7 @@ public interface BusinessDayService {
 
     void addClosedDay(DayOfWeek dayOfWeek);
 
-    void addClosedDate(Date date);
+    void addClosedDate(DateTime dateTime);
 
     void addSpecialWeekDay(DayOfWeek dayOfWeek, long openingTime, long closingTime);
 

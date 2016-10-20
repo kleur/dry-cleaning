@@ -57,8 +57,8 @@ public class DefaultBusinessDayService implements BusinessDayService{
     }
 
     @Override
-    public void addClosedDate(Date date) {
-        dates.put((new DateTime(date).withTimeAtStartOfDay()), new ClosedDay());
+    public void addClosedDate(DateTime dateTime) {
+        dates.put((dateTime.withTimeAtStartOfDay()), new ClosedDay());
     }
 
     @Override

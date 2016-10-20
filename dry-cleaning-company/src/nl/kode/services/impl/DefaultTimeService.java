@@ -22,10 +22,10 @@ public class DefaultTimeService implements TimeService {
     }
 
     @Override
-    public Date parseDate(String date) {
+    public DateTime parseDate(String date) {
         for (SimpleDateFormat pattern : getPatterns()) {
             try {
-                return new Date(pattern.parse(date).getTime());
+                return new DateTime(pattern.parse(date).getTime());
             } catch (ParseException pe) {
                 // do nothing
             }

@@ -1,7 +1,8 @@
 package nl.kode.services;
 
+import org.joda.time.DateTime;
+
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ public interface TimeService {
 
     long timeStringToMillis(String time);
 
-    Date parseDate(String date);
+    DateTime parseDate(String date);
 
     List<SimpleDateFormat> getPatterns();
 }

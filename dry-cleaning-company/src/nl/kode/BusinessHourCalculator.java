@@ -59,10 +59,9 @@ public class BusinessHourCalculator {
 
     public Date calculateDeadline(long steamTimeSeconds, String dateString) {
 
-        Date startDate = timeService.parseDate(dateString);
-        DateTime pointer = new DateTime(startDate);
+        DateTime pointer = timeService.parseDate(dateString);
 
-        System.out.println("DROP OFF DATE/TIME: " + startDate);
+        System.out.println("DROP OFF DATE/TIME: " + pointer);
 
         Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
         Duration businessTimeLeft = new Duration(0);

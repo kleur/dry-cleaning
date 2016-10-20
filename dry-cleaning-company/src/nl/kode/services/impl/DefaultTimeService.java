@@ -17,11 +17,6 @@ import java.util.List;
 public class DefaultTimeService implements TimeService {
 
     @Override
-    public long timeStringToMillis(String time) {
-        return new DateTime(parseDate(time)).getMillisOfDay();
-    }
-
-    @Override
     public DateTime parseDate(String date) {
         for (SimpleDateFormat pattern : getPatterns()) {
             try {
@@ -33,8 +28,8 @@ public class DefaultTimeService implements TimeService {
         throw new RuntimeException("no matching patterns");
     }
 
-    @Override
-    public List<SimpleDateFormat> getPatterns(){
+
+    private List<SimpleDateFormat> getPatterns(){
         List<SimpleDateFormat> knownPatterns = new ArrayList<SimpleDateFormat>();
 
 //        knownPatterns.add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));

@@ -25,21 +25,21 @@ public class BusinessHourCalculator {
         super();
         this.timeService = new DefaultTimeService();
         this.businessDayService = new DefaultBusinessDayService(
-                timeService.timeStringToMillis(defaultOpeningTime),
-                timeService.timeStringToMillis(defaultClosingTime));
+                timeService.parseDate(defaultOpeningTime).getMillisOfDay(),
+                timeService.parseDate(defaultClosingTime).getMillisOfDay());
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
         businessDayService.addSpecialWeekDay(dayOfWeek,
-                timeService.timeStringToMillis(openingTime),
-                timeService.timeStringToMillis(closingTime));
+                timeService.parseDate(openingTime).getMillisOfDay(),
+                timeService.parseDate(closingTime).getMillisOfDay());
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
         businessDayService.addSpecialDate(new DateTime(
                 timeService.parseDate(date)),
-                timeService.timeStringToMillis(openingTime),
-                timeService.timeStringToMillis(closingTime));
+                timeService.parseDate(openingTime).getMillisOfDay(),
+                timeService.parseDate(closingTime).getMillisOfDay());
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks)

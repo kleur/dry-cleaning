@@ -20,7 +20,7 @@ public class DefaultBusinessDayService implements BusinessDayService{
     private Map<DayOfWeek, Day> weekDays;
     private Map<DateTime, Day> dates;
 
-    public DefaultBusinessDayService(long defaultOpeningTime, long defaultClosingTime) {
+    public DefaultBusinessDayService(LocalTime defaultOpeningTime, LocalTime defaultClosingTime) {
         this.weekDays = new LinkedHashMap<>();
         this.dates = new LinkedHashMap<>();
         this.setRegularDay(defaultOpeningTime, defaultClosingTime);
@@ -47,7 +47,7 @@ public class DefaultBusinessDayService implements BusinessDayService{
     }
 
     @Override
-    public void setRegularDay(long defaultOpeningTime, long defaultClosingTime) {
+    public void setRegularDay(LocalTime defaultOpeningTime, LocalTime defaultClosingTime) {
         regularBusinessDay = new BusinessDay(defaultOpeningTime, defaultClosingTime);
     }
 
@@ -62,12 +62,12 @@ public class DefaultBusinessDayService implements BusinessDayService{
     }
 
     @Override
-    public void addSpecialWeekDay(DayOfWeek dayOfWeek, long openingTime, long closingTime) {
+    public void addSpecialWeekDay(DayOfWeek dayOfWeek, LocalTime openingTime, LocalTime closingTime) {
         weekDays.put(dayOfWeek, (new BusinessDay(openingTime, closingTime)));
     }
 
     @Override
-    public void addSpecialDate(DateTime dateTime, long openingTime, long closingTime) {
+    public void addSpecialDate(DateTime dateTime, LocalTime openingTime, LocalTime closingTime) {
         dates.put(dateTime, (new BusinessDay(openingTime, closingTime)));
     }
 

@@ -25,21 +25,22 @@ public class BusinessHourCalculator {
         super();
         this.timeService = new DefaultTimeService();
         this.businessDayService = new DefaultBusinessDayService(
-                timeService.parseDate(defaultOpeningTime).getMillisOfDay(),
-                timeService.parseDate(defaultClosingTime).getMillisOfDay());
+                timeService.parseDate(defaultOpeningTime).toLocalTime(),
+                timeService.parseDate(defaultClosingTime).toLocalTime()
+        );
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
         businessDayService.addSpecialWeekDay(dayOfWeek,
-                timeService.parseDate(openingTime).getMillisOfDay(),
-                timeService.parseDate(closingTime).getMillisOfDay());
+                timeService.parseDate(openingTime).toLocalTime(),
+                timeService.parseDate(closingTime).toLocalTime()
+        );
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
-        businessDayService.addSpecialDate(new DateTime(
-                timeService.parseDate(date)),
-                timeService.parseDate(openingTime).getMillisOfDay(),
-                timeService.parseDate(closingTime).getMillisOfDay());
+        businessDayService.addSpecialDate(new DateTime(date),
+                timeService.parseDate(openingTime).toLocalTime(),
+                timeService.parseDate(closingTime).toLocalTime());
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks)
@@ -62,6 +63,8 @@ public class BusinessHourCalculator {
 
         DateTime pointer = timeService.parseDate(dateString);
 
+        // set duration of time it takes to dryclean
+        // and duration the items have actually been in the store during business hours
         Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
         Duration businessTimeLeft = new Duration(0);
 

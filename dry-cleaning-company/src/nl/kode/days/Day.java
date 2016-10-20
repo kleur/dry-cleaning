@@ -9,4 +9,5 @@ import org.joda.time.Interval;
 public interface Day {
 
     public Interval getTimeSlot(DateTime dateTime);
+
 }

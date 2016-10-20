@@ -1,7 +1,9 @@
 package nl.kode;
 
 import com.google.common.collect.Iterables;
-import nl.kode.days.Day;
+import nl.kode.services.TimeService;
+import nl.kode.services.impl.DefaultBusinessDayService;
+import nl.kode.services.impl.DefaultTimeService;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -16,14 +18,12 @@ import java.util.List;
 public class BusinessHourCalculator {
 
     private TimeService timeService;
-
-    private BusinessDayService businessDayService;
+    private DefaultBusinessDayService businessDayService;
 
     public BusinessHourCalculator(String defaultOpeningTime, String defaultClosingTime) {
         super();
-        this.timeService = new TimeService();
-        this.businessDayService = new BusinessDayService();
-        this.businessDayService.setRegularDay(
+        this.timeService = new DefaultTimeService();
+        this.businessDayService = new DefaultBusinessDayService(
                 timeService.timeStringToMillis(defaultOpeningTime),
                 timeService.timeStringToMillis(defaultClosingTime));
     }
@@ -75,7 +75,7 @@ public class BusinessHourCalculator {
                 intervals.add(timeSlot);
             }
 
-            // to the next day
+            // to the next day if closed this day or past closing time
             pointer = pointer.withTimeAtStartOfDay().plusDays(1);
         }
 

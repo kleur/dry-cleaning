@@ -1,6 +1,5 @@
 package nl.kode.days.impl;
 
-import nl.kode.TimeService;
 import nl.kode.days.Day;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

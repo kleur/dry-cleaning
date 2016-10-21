@@ -54,50 +54,55 @@ public class BusinessHourCalculator {
 
     public Date calculateDeadline(long steamTimeSeconds, String dateString) {
         Date dropOffDate = parseDate(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"), dateString);
+        System.out.println("\nDROPOFF TIME: " + dropOffDate);
 
+        return calculateDeadline(steamTimeSeconds, dropOffDate);
+    }
+
+    public Date calculateDeadline(long steamTimeSeconds, Date dropOffDate) {
         Calendar calDropOff = Calendar.getInstance();
         calDropOff.setTime(dropOffDate);
-
-        System.out.println("DROPOFF TIME: " + calDropOff.getTime());
+        System.out.println("\nTime to dryclean: " + printTime(steamTimeSeconds));
 
         Calendar calPointer = calDropOff;
         long timeActuallySteamed = Long.valueOf(0);
         long timeLeftBeforePickup = steamTimeSeconds;
 
-        int count = 0;
+        while(timeActuallySteamed < steamTimeSeconds) {
 
-        while(timeActuallySteamed < steamTimeSeconds && count <10) {
-
-            count++;
             // get the day
             Day day = businessDayService.getDay(calPointer);
             long timeStillOpen = day.getTimeStillOpen(calPointer);
 
             if(timeStillOpen > 0) {
 
+                System.out.println("\nStart of day: " + ((BusinessDay)day).getOpeningTime());
+
                 if (timeStillOpen < timeLeftBeforePickup) {
                     timeActuallySteamed += timeStillOpen;
                     timeLeftBeforePickup = steamTimeSeconds - timeActuallySteamed;
-                    System.out.println("time still open: " + printTime(timeStillOpen));
-                    System.out.println("time actually steamed: " + printTime(timeActuallySteamed));
+                    logDay(timeStillOpen, timeActuallySteamed, calPointer);
+                    calPointer = startOfDay(calPointer);
+
+                    // move pointer back to opening time
+                    calPointer.add(Calendar.SECOND, ((BusinessDay)day).getOpeningTime().toSecondOfDay());
+
                 } else {
-                    System.out.println("Start of day: " + ((BusinessDay)day).getOpeningTime());
                     calPointer.add(Calendar.SECOND, (int) timeLeftBeforePickup);
-                    System.out.println(calPointer.getTime());
                     return  calPointer.getTime();
                 }
             }
 
-            // move to next day, and set time to 00:00
+            // move to next day
             calPointer.add(Calendar.DAY_OF_MONTH, 1);
-            calPointer = startOfDay(calPointer);
-
-            // move pointer to opening time
-            calPointer.add(Calendar.SECOND, ((BusinessDay)day).getOpeningTime().toSecondOfDay());
-            System.out.println("End of day: " + calPointer.getTime());
         }
+        throw new RuntimeException("The drycleaner has gone bankrupt");
+    }
 
-        return calPointer.getTime();
+    private void logDay(long timeStillOpen, long timeActuallySteamed, Calendar calPointer) {
+        System.out.println("time still open: " + printTime(timeStillOpen));
+        System.out.println("time actually steamed: " + printTime(timeActuallySteamed));
+        System.out.println("End of day: " + calPointer.getTime());
     }
 
     private String printTime(long time) {

@@ -3,7 +3,9 @@ package nl.kode.days.impl;
 import nl.kode.days.Day;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.LocalTime;
+
+import java.time.*;
+import java.util.Calendar;
 
 /**
  * Created by koenvandeleur on 19/10/2016.
@@ -17,23 +19,48 @@ public class BusinessDay implements Day {
         super();
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        System.out.println("default opening times:");
+        System.out.println("opening: " + openingTime.toString());
+        System.out.println("closing: " + closingTime.toString());
     }
 
     @Override
     public Interval getTimeSlot(DateTime fromTime) {
+        return null;
+    }
 
-        // Skip if already past end of the day
-        if (fromTime.getMillisOfDay() >= closingTime.getMillisOfDay()) {
-            return null;
+    @Override
+    public long getTimeStillOpen(Calendar calendar) {
+        Instant instant = Instant.ofEpochMilli(calendar.getTime().getTime());
+        LocalTime pointerTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
+
+        if (pointerTime.isAfter(closingTime)) {
+            return 0;
         }
 
-        // If start time is too early, set start of timeslot to opening time
-        if (fromTime.getMillisOfDay() < openingTime.getMillisOfDay()) {
-            fromTime = fromTime.withTimeAtStartOfDay().withMillisOfDay((int) openingTime.getMillisOfDay());
+        if (pointerTime.isBefore(openingTime)) {
+            pointerTime = openingTime;
         }
 
-        DateTime toTime = fromTime.withTimeAtStartOfDay().withMillisOfDay((int) closingTime.getMillisOfDay());
+        Duration duration = Duration.between(pointerTime, closingTime);
+        long time = duration.getSeconds();
+        System.out.println("still open today: " + (time/(60*60)) + " hours " + (time % (60*60))/60 + " minutes");
+        return time;
+    }
 
-        return new Interval(fromTime, toTime);
+    public LocalTime getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(LocalTime openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public LocalTime getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(LocalTime closingTime) {
+        this.closingTime = closingTime;
     }
 }

@@ -1,90 +1,112 @@
 package nl.kode;
 
-import com.google.common.collect.Iterables;
+import nl.kode.days.Day;
 import nl.kode.days.DayOfWeek;
-import nl.kode.services.TimeService;
+import nl.kode.days.impl.BusinessDay;
+import nl.kode.services.BusinessDayService;
 import nl.kode.services.impl.DefaultBusinessDayService;
-import nl.kode.services.impl.DefaultTimeService;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
 
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
 
 /**
  * Created by koenvandeleur on 18/10/2016.
  */
 public class BusinessHourCalculator {
 
-    private TimeService timeService;
-    private DefaultBusinessDayService businessDayService;
+    private BusinessDayService businessDayService;
 
     public BusinessHourCalculator(String defaultOpeningTime, String defaultClosingTime) {
         super();
-        this.timeService = new DefaultTimeService();
-        this.businessDayService = new DefaultBusinessDayService(
-                timeService.parseDate(defaultOpeningTime).toLocalTime(),
-                timeService.parseDate(defaultClosingTime).toLocalTime()
-        );
+        businessDayService = new DefaultBusinessDayService(parseTime(defaultOpeningTime), parseTime(defaultClosingTime));
+    }
+
+    private LocalTime parseTime(String localTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(localTimeString, formatter);
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
-        businessDayService.addSpecialWeekDay(dayOfWeek,
-                timeService.parseDate(openingTime).toLocalTime(),
-                timeService.parseDate(closingTime).toLocalTime()
-        );
+
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
-        businessDayService.addSpecialDate(new DateTime(date),
-                timeService.parseDate(openingTime).toLocalTime(),
-                timeService.parseDate(closingTime).toLocalTime());
+
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks) {
         for (DayOfWeek day : dayOfWeeks) {
-            businessDayService.addClosedDay(day);
+
         }
     }
 
     public void setClosed(String... dates) {
         for (String date : dates) {
-            businessDayService.addClosedDate(timeService.parseDate(date));
+
         }
     }
 
     public Date calculateDeadline(long steamTimeSeconds, String dateString) {
+        Date dropOffDate = parseDate(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"), dateString);
 
-        DateTime pointer = timeService.parseDate(dateString);
+        Calendar calDropOff = Calendar.getInstance();
+        calDropOff.setTime(dropOffDate);
 
-        // set duration of time it takes to dryclean
-        // and duration the items have actually been in the store during business hours
-        Duration waitTime = Duration.standardSeconds(steamTimeSeconds);
-        Duration businessTimeLeft = new Duration(0);
+        System.out.println("DROPOFF TIME: " + calDropOff.getTime());
 
-        List<Interval> intervals = new ArrayList<>();
-        while (waitTime.isLongerThan(businessTimeLeft)) {
+        Calendar calPointer = calDropOff;
+        long workingTimeSeconds = Long.valueOf(0);
 
-            Interval timeSlot = businessDayService.getDay(pointer).getTimeSlot(pointer);
-            if (timeSlot != null) {
-                businessTimeLeft = businessTimeLeft.plus(timeSlot.toDuration());
-                intervals.add(timeSlot);
+        while(workingTimeSeconds < steamTimeSeconds) {
+
+            // get the day
+            Day day = businessDayService.getDay(calPointer);
+            long timeStillOpen = day.getTimeStillOpen(calPointer);
+            if(timeStillOpen > 0) {
+                workingTimeSeconds += timeStillOpen;
+                if(timeStillOpen >= steamTimeSeconds) {
+
+                    int secondsToOpeningTime = ((BusinessDay)day).getOpeningTime().toSecondOfDay();
+                    calPointer.add(Calendar.SECOND, secondsToOpeningTime);
+                    calPointer.add(Calendar.SECOND, (int) steamTimeSeconds);
+                    return calPointer.getTime();
+                }
             }
 
-            // to the next day if closed this day or past closing time
-            pointer = pointer.withTimeAtStartOfDay().plusDays(1);
+            calPointer.add(Calendar.DAY_OF_MONTH, 1);
+            calPointer = starOfDay(calPointer);
         }
 
-        Interval lastInterval = Iterables.getLast(intervals);
-        DateTime endTime = lastInterval.getEnd().minus(businessTimeLeft.minus(waitTime));
+//        calPointer.add(Calendar.SECOND, (Long.valueOf(workingTimeSeconds).intValue()));
 
-        return new Date(endTime.getMillis());
+        return calPointer.getTime();
+    }
+
+    private Calendar starOfDay(Calendar cal) {
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal;
     }
 
     public void printSpecials() {
-        businessDayService.printClosedDates();
+
+    }
+
+    public Date parseDate(DateFormat df, String input) {
+        try {
+            return df.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("unable to parse String to Date");
     }
 
 }

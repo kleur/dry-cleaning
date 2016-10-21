@@ -43,18 +43,14 @@ public class BusinessHourCalculator {
                 timeService.parseDate(closingTime).toLocalTime());
     }
 
-    public void setClosed(DayOfWeek... dayOfWeeks)
-    {
-        for (DayOfWeek day : dayOfWeeks)
-        {
+    public void setClosed(DayOfWeek... dayOfWeeks) {
+        for (DayOfWeek day : dayOfWeeks) {
             businessDayService.addClosedDay(day);
         }
     }
 
-    public void setClosed(String... dates)
-    {
-        for (String date : dates)
-        {
+    public void setClosed(String... dates) {
+        for (String date : dates) {
             businessDayService.addClosedDate(timeService.parseDate(date));
         }
     }
@@ -69,7 +65,7 @@ public class BusinessHourCalculator {
         Duration businessTimeLeft = new Duration(0);
 
         List<Interval> intervals = new ArrayList<>();
-        while(waitTime.isLongerThan(businessTimeLeft)) {
+        while (waitTime.isLongerThan(businessTimeLeft)) {
 
             Interval timeSlot = businessDayService.getDay(pointer).getTimeSlot(pointer);
             if (timeSlot != null) {
@@ -90,5 +86,5 @@ public class BusinessHourCalculator {
     public void printSpecials() {
         businessDayService.printClosedDates();
     }
-    
+
 }

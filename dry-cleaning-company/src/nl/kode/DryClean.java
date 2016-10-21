@@ -43,6 +43,5 @@ public class DryClean {
 
         System.out.println("\nPICKUP TIME: " + dt1.format(businessHourCalculator.calculateDeadline(12 * 60 * 60, "2016-10-21 16:30")));
         businessHourCalculator.printSpecials();
-
     }
 }

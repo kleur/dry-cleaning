@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Created by koenvandeleur on 19/10/2016.
  */
-public class DefaultBusinessDayService implements BusinessDayService{
+public class DefaultBusinessDayService implements BusinessDayService {
 
     private Day regularBusinessDay;
     private Map<DayOfWeek, Day> weekDays;
@@ -100,7 +100,7 @@ public class DefaultBusinessDayService implements BusinessDayService{
 
     @Override
     public int getDayIndex(DateTime date) {
-        return date.getDayOfWeek()==7? 0 : date.getDayOfWeek();
+        return date.getDayOfWeek() == 7 ? 0 : date.getDayOfWeek();
     }
 
 }

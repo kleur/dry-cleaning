@@ -61,34 +61,50 @@ public class BusinessHourCalculator {
         System.out.println("DROPOFF TIME: " + calDropOff.getTime());
 
         Calendar calPointer = calDropOff;
-        long workingTimeSeconds = Long.valueOf(0);
+        long timeActuallySteamed = Long.valueOf(0);
+        long timeLeftBeforePickup = steamTimeSeconds;
 
-        while(workingTimeSeconds < steamTimeSeconds) {
+        int count = 0;
 
+        while(timeActuallySteamed < steamTimeSeconds && count <10) {
+
+            count++;
             // get the day
             Day day = businessDayService.getDay(calPointer);
             long timeStillOpen = day.getTimeStillOpen(calPointer);
-            if(timeStillOpen > 0) {
-                workingTimeSeconds += timeStillOpen;
-                if(timeStillOpen >= steamTimeSeconds) {
 
-                    int secondsToOpeningTime = ((BusinessDay)day).getOpeningTime().toSecondOfDay();
-                    calPointer.add(Calendar.SECOND, secondsToOpeningTime);
-                    calPointer.add(Calendar.SECOND, (int) steamTimeSeconds);
-                    return calPointer.getTime();
+            if(timeStillOpen > 0) {
+
+                if (timeStillOpen < timeLeftBeforePickup) {
+                    timeActuallySteamed += timeStillOpen;
+                    timeLeftBeforePickup = steamTimeSeconds - timeActuallySteamed;
+                    System.out.println("time still open: " + printTime(timeStillOpen));
+                    System.out.println("time actually steamed: " + printTime(timeActuallySteamed));
+                } else {
+                    System.out.println("Start of day: " + ((BusinessDay)day).getOpeningTime());
+                    calPointer.add(Calendar.SECOND, (int) timeLeftBeforePickup);
+                    System.out.println(calPointer.getTime());
+                    return  calPointer.getTime();
                 }
             }
 
+            // move to next day, and set time to 00:00
             calPointer.add(Calendar.DAY_OF_MONTH, 1);
-            calPointer = starOfDay(calPointer);
-        }
+            calPointer = startOfDay(calPointer);
 
-//        calPointer.add(Calendar.SECOND, (Long.valueOf(workingTimeSeconds).intValue()));
+            // move pointer to opening time
+            calPointer.add(Calendar.SECOND, ((BusinessDay)day).getOpeningTime().toSecondOfDay());
+            System.out.println("End of day: " + calPointer.getTime());
+        }
 
         return calPointer.getTime();
     }
 
-    private Calendar starOfDay(Calendar cal) {
+    private String printTime(long time) {
+        return (time/(60*60)) + " hours " + (time % (60*60))/60 + " minutes";
+    }
+
+    private Calendar startOfDay(Calendar cal) {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);

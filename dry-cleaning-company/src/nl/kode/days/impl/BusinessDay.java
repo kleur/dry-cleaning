@@ -44,7 +44,7 @@ public class BusinessDay implements Day {
 
         Duration duration = Duration.between(pointerTime, closingTime);
         long time = duration.getSeconds();
-        System.out.println("still open today: " + (time/(60*60)) + " hours " + (time % (60*60))/60 + " minutes");
+//        System.out.println("still open today: " + printTime(time));
         return time;
     }
 
@@ -62,5 +62,9 @@ public class BusinessDay implements Day {
 
     public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
+    }
+
+    private String printTime(long time) {
+        return (time/(60*60)) + " hours " + (time % (60*60))/60 + " minutes";
     }
 }

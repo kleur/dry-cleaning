@@ -42,7 +42,7 @@ public class DryClean {
         businessHourCalculator.setClosed("2016-10-25");
 
 //        System.out.println("\nPICKUP TIME: " + dt1.format(businessHourCalculator.calculateDeadline(12 * 60 * 60, "2016-10-21 16:30")));
-        System.out.println("PICKUP  TIME: " + businessHourCalculator.calculateDeadline(12 * 60 * 60, "2016-10-21 19:00"));
+        System.out.println("\nPICKUP  TIME: " + businessHourCalculator.calculateDeadline(14 * 60 * 60, "2016-10-21 19:00"));
 
         businessHourCalculator.printSpecials();
     }

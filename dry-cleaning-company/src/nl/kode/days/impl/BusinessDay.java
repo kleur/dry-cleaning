@@ -1,8 +1,6 @@
 package nl.kode.days.impl;
 
 import nl.kode.days.Day;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import java.time.*;
 import java.util.Calendar;
@@ -19,14 +17,9 @@ public class BusinessDay implements Day {
         super();
         this.openingTime = openingTime;
         this.closingTime = closingTime;
-        System.out.println("default opening times:");
+        System.out.println("opening times:");
         System.out.println("opening: " + openingTime.toString());
         System.out.println("closing: " + closingTime.toString());
-    }
-
-    @Override
-    public Interval getTimeSlot(DateTime fromTime) {
-        return null;
     }
 
     @Override
@@ -43,8 +36,7 @@ public class BusinessDay implements Day {
         }
 
         Duration duration = Duration.between(pointerTime, closingTime);
-        long time = duration.getSeconds();
-        return time;
+        return duration.getSeconds();
     }
 
     public LocalTime getOpeningTime() {

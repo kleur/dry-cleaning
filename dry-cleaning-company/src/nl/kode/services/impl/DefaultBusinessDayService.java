@@ -24,16 +24,22 @@ public class DefaultBusinessDayService implements BusinessDayService {
     }
 
     @Override
-    public Day getDay(Calendar dateTime) {
+    public Day getDay(Calendar cal) {
 
-        DayOfWeek weekDayName = DayOfWeek.values()[getDayIndex(dateTime)];
+        DayOfWeek weekDayName = DayOfWeek.values()[getDayIndex(cal)];
+
+        System.out.println("WeekdayName: " + weekDayName + " actually: " + cal.getTime() );
 
         Day day = regularBusinessDay;
 
-        // Check for special day
+        // Check for special weekday
+
+        if (weekDays.containsKey(weekDayName)) {
+            day = weekDays.get(weekDayName);
+        }
+
 
         // Check for special date
-
 
         return day;
     }
@@ -55,7 +61,7 @@ public class DefaultBusinessDayService implements BusinessDayService {
 
     @Override
     public void addSpecialWeekDay(DayOfWeek dayOfWeek, LocalTime openingTime, LocalTime closingTime) {
-//        weekDays.put(dayOfWeek, (new BusinessDay(openingTime, closingTime)));
+        weekDays.put(dayOfWeek, (new BusinessDay(openingTime, closingTime)));
     }
 
     @Override
@@ -92,8 +98,7 @@ public class DefaultBusinessDayService implements BusinessDayService {
 
     @Override
     public int getDayIndex(Calendar date) {
-//        return date.getDayOfWeek() == 7 ? 0 : date.getDayOfWeek();
-        return 0;
+        return  date.get(Calendar.DAY_OF_WEEK) -1;
     }
 
 }

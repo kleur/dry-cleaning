@@ -1,9 +1,5 @@
 package nl.kode.days;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-
-import java.time.LocalTime;
 import java.util.Calendar;
 
 /**
@@ -11,8 +7,6 @@ import java.util.Calendar;
  */
 public interface Day {
 
-    public Interval getTimeSlot(DateTime dateTime);
-
-    public long getTimeStillOpen(Calendar calendar);
+    long getTimeStillOpen(Calendar calendar);
 
 }

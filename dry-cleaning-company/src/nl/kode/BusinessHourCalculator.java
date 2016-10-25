@@ -20,46 +20,50 @@ import java.util.Date;
  */
 public class BusinessHourCalculator {
 
+    private SimpleDateFormat df;
+
     private BusinessDayService businessDayService;
 
     public BusinessHourCalculator(String defaultOpeningTime, String defaultClosingTime) {
         super();
-        businessDayService = new DefaultBusinessDayService(parseTime(defaultOpeningTime), parseTime(defaultClosingTime));
-    }
-
-    private LocalTime parseTime(String localTimeString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(localTimeString, formatter);
+        businessDayService = new DefaultBusinessDayService(
+                parseTime(defaultOpeningTime),
+                parseTime(defaultClosingTime));
+        df = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm");
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
-
+        businessDayService.addSpecialWeekDay(dayOfWeek, parseTime(openingTime), parseTime(closingTime));
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
-
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(parseDate(df, date));
+//        businessDayService.addSpecialDate(cal, parseTime(openingTime), parseTime(closingTime));
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks) {
         for (DayOfWeek day : dayOfWeeks) {
-
+//            businessDayService.addClosedDay(day);
         }
     }
 
     public void setClosed(String... dates) {
         for (String date : dates) {
-
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(parseDate(df, date));
+//            businessDayService.addClosedDate(cal);
         }
     }
 
     public Date calculateDeadline(long steamTimeSeconds, String dateString) {
-        Date dropOffDate = parseDate(new SimpleDateFormat("yyyy-MM-dd' 'HH:mm"), dateString);
+        Date dropOffDate = parseDate(df, dateString);
         System.out.println("\nDROPOFF TIME: " + dropOffDate);
 
         return calculateDeadline(steamTimeSeconds, dropOffDate);
     }
 
-    public Date calculateDeadline(long steamTimeSeconds, Date dropOffDate) {
+    private Date calculateDeadline(long steamTimeSeconds, Date dropOffDate) {
         Calendar calDropOff = Calendar.getInstance();
         calDropOff.setTime(dropOffDate);
         System.out.println("Time to dryclean: " + printTime(steamTimeSeconds));
@@ -141,6 +145,11 @@ public class BusinessHourCalculator {
             e.printStackTrace();
         }
         throw new RuntimeException("unable to parse String to Date");
+    }
+
+    private LocalTime parseTime(String localTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(localTimeString, formatter);
     }
 
 }

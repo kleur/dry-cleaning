@@ -21,6 +21,7 @@ import java.util.Date;
 public class BusinessHourCalculator {
 
     private SimpleDateFormat df;
+    private SimpleDateFormat dfShort;
 
     private BusinessDayService businessDayService;
 
@@ -30,6 +31,7 @@ public class BusinessHourCalculator {
                 parseTime(defaultOpeningTime),
                 parseTime(defaultClosingTime));
         df = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm");
+        dfShort = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public void setOpeningHours(DayOfWeek dayOfWeek, String openingTime, String closingTime) {
@@ -37,22 +39,22 @@ public class BusinessHourCalculator {
     }
 
     public void setOpeningHours(String date, String openingTime, String closingTime) {
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(parseDate(df, date));
-//        businessDayService.addSpecialDate(cal, parseTime(openingTime), parseTime(closingTime));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parseDate(dfShort, date));
+        businessDayService.addSpecialDate(cal, parseTime(openingTime), parseTime(closingTime));
     }
 
     public void setClosed(DayOfWeek... dayOfWeeks) {
         for (DayOfWeek day : dayOfWeeks) {
-//            businessDayService.addClosedDay(day);
+            businessDayService.addClosedDay(day);
         }
     }
 
     public void setClosed(String... dates) {
         for (String date : dates) {
-//            Calendar cal = Calendar.getInstance();
-//            cal.setTime(parseDate(df, date));
-//            businessDayService.addClosedDate(cal);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(parseDate(dfShort, date));
+            businessDayService.addClosedDate(cal);
         }
     }
 

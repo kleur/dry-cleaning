@@ -33,13 +33,14 @@ public class DefaultBusinessDayService implements BusinessDayService {
         Day day = regularBusinessDay;
 
         // Check for special weekday
-
         if (weekDays.containsKey(weekDayName)) {
             day = weekDays.get(weekDayName);
         }
 
-
         // Check for special date
+        if (dates.containsKey(cal)) {
+            day = dates.get(cal);
+        }
 
         return day;
     }
@@ -55,8 +56,8 @@ public class DefaultBusinessDayService implements BusinessDayService {
     }
 
     @Override
-    public void addClosedDate(Calendar dateTime) {
-//        dates.put((dateTime.withTimeAtStartOfDay()), new ClosedDay());
+    public void addClosedDate(Calendar cal) {
+        dates.put(cal, new ClosedDay());
     }
 
     @Override
@@ -65,8 +66,8 @@ public class DefaultBusinessDayService implements BusinessDayService {
     }
 
     @Override
-    public void addSpecialDate(Calendar dateTime, LocalTime openingTime, LocalTime closingTime) {
-//        dates.put(dateTime, (new BusinessDay(openingTime, closingTime)));
+    public void addSpecialDate(Calendar cal, LocalTime openingTime, LocalTime closingTime) {
+        dates.put(cal, (new BusinessDay(openingTime, closingTime)));
     }
 
     @Override
@@ -79,10 +80,11 @@ public class DefaultBusinessDayService implements BusinessDayService {
     }
 
     private void printDates(Map<?, Day> map) {
-//        for (Object o : map.keySet()) {
-//            Interval timeSlot = map.get(o).getTimeSlot(DateTime.now().withTimeAtStartOfDay());
-//            printOpeningTimes(timeSlot, o.toString());
-//        }
+        for (Object o : map.keySet()) {
+            if ((map.get(o)).getTimeStillOpen(null) > 0) {
+
+            }
+        }
     }
 
 //    private void printOpeningTimes(Interval timeSlot, String daySpecification) {

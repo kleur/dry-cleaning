@@ -8,8 +8,8 @@ public class DryClean {
 
     public static void main(String[] args) {
 
-//        SimpleDateFormat dt1 = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
-//
+        SimpleDateFormat dt1 = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+
 //        BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "15:00");
 //        businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
 //        businessHourCalculator.setOpeningHours("2010-12-24", "8:00", "13:00");
@@ -38,11 +38,12 @@ public class DryClean {
         BusinessHourCalculator businessHourCalculator = new BusinessHourCalculator("09:00", "18:00");
         businessHourCalculator.setOpeningHours(DayOfWeek.FRIDAY, "10:00", "17:00");
         businessHourCalculator.setOpeningHours("2016-10-24", "12:00", "18:00");
+        businessHourCalculator.setOpeningHours("2016-10-25", "10:00", "18:00");
         businessHourCalculator.setClosed(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-        businessHourCalculator.setClosed("2016-10-25");
+        businessHourCalculator.setClosed("2016-10-26");
 
 //        System.out.println("\nPICKUP TIME: " + dt1.format(businessHourCalculator.calculateDeadline(12 * 60 * 60, "2016-10-21 16:30")));
-        System.out.println("\nPICKUP  TIME: " + businessHourCalculator.calculateDeadline(100 * 60 * 60, "2016-10-21 19:00"));
+        System.out.println("\nPICKUP  TIME: " + businessHourCalculator.calculateDeadline(20 * 60 * 60, "2016-10-21 15:00"));
 
         businessHourCalculator.printSpecials();
     }

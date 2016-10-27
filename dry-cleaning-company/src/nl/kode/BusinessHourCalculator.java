@@ -135,10 +135,7 @@ public class BusinessHourCalculator {
         cal.set(Calendar.MILLISECOND, 0);
         return cal;
     }
-
-    public void printSpecials() {
-
-    }
+    
 
     public Date parseDate(DateFormat df, String input) {
         try {

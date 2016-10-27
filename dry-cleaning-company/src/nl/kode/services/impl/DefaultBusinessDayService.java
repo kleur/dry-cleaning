@@ -71,34 +71,6 @@ public class DefaultBusinessDayService implements BusinessDayService {
     }
 
     @Override
-    public void printClosedDates() {
-        System.out.println("\nPRINT SPECIAL WEEKDAYS");
-        printDates(weekDays);
-
-        System.out.println("\nPRINT SPECIAL DATES");
-        printDates(dates);
-    }
-
-    private void printDates(Map<?, Day> map) {
-        for (Object o : map.keySet()) {
-            if ((map.get(o)).getTimeStillOpen(null) > 0) {
-
-            }
-        }
-    }
-
-//    private void printOpeningTimes(Interval timeSlot, String daySpecification) {
-//        String msg = "closed";
-//        if (timeSlot != null) {
-//            LocalTime openingTime = new LocalTime(timeSlot.getStart().getHourOfDay(), timeSlot.getStart().getMinuteOfHour());
-//            LocalTime closingTime = new LocalTime(timeSlot.getEnd().getHourOfDay(), timeSlot.getEnd().getMinuteOfHour());
-//            msg = openingTime.toString("HH:mm") + " until " + closingTime.toString("HH:mm");
-//        }
-//
-//        System.out.println("Special day: " + msg + " on " + daySpecification);
-//    }
-
-    @Override
     public int getDayIndex(Calendar date) {
         return  date.get(Calendar.DAY_OF_WEEK) -1;
     }
